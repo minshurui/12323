@@ -16,10 +16,7 @@ fi
 
 
 
-# 更新系统
-apt update
-apt install -y curl unzip
-#是的，Alist和Aring通常需要在同一个路径下配合使用，确保它们可以正确地访问共享的数据和配置文件。以下是修改后的脚本，将Alist和Aring容器的文件共享路径设置为相同的路径：
+# 抱歉之前提供的脚本有一些错误。以下是正确的脚本：
 
 ```bash
 #!/bin/bash
@@ -47,13 +44,18 @@ docker run -d --name alist \
   alexwall/alist
 
 # 拉取Aring镜像
-docker pull abrignoni/docker-aring
+docker pull eilinge/aring2:latest
 
 # 运行Aring容器
 docker run -d --name aring \
   --network alist-aring-net \
   -p 8888:8080 \
   -v $shared_dir/aring_data:/data \
-  abrignoni/docker-aring
+  eilinge/aring2:latest
 
-echo "Alist and Aring containers are running successfully
+echo "Alist and Aring containers are running successfully!"
+```
+
+#这个脚本中修复了之前的语法错误，并更正了Aring2镜像的名称。请确保你安装了Docker，并且有足够的权限来拉取和运行容器。
+
+希望这次能够解决你的问题。如果有其他问题，请随时告诉我。

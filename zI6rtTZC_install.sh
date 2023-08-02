@@ -19,35 +19,38 @@ fi
 # 更新系统
 apt update
 apt install -y curl unzip
+#是的，Alist和Aring通常需要在同一个路径下配合使用，确保它们可以正确地访问共享的数据和配置文件。以下是修改后的脚本，将Alist和Aring容器的文件共享路径设置为相同的路径：
 
-# 安装Docker
-curl -fsSL https://get.docker.com | bash
-
-# 下载Alist和Aring的Docker镜像
-docker pull alexwall/alist:latest
-docker pull eilinge/aring:latest
+```bash
+#!/bin/bash
 
 # 创建网络
 docker network create alist-aring-net
 
+# 设置共享路径
+shared_dir=/alist-aring/shared
+
+# 创建共享目录
+mkdir -p $shared_dir/alist_data
+mkdir -p $shared_dir/alist_config
+mkdir -p $shared_dir/aring_data
+
 # 运行Alist
 docker run -d --name alist \
---network alist-aring-net \
--p 5212:5212 \
--v /alist/data:/alist/data \
--v /alist/config:/alist/config \
-alexwall/alist
+  --network alist-aring-net \
+  -p 5212:5212 \
+  -v $shared_dir/alist_data:/alist/data \
+  -v $shared_dir/alist_config:/alist/config \
+  alexwall/alist
 
-# 运行Aring  
+# 运行Aring
 docker run -d --name aring \
---network alist-aring-net \ 
--p 8082:8083 \
--v /aring/data:/data \
-eilinge/aring
+  --network alist-aring-net \
+  -p 8888:8080 \
+  -v $shared_dir/aring_data:/data \
+  eilinge/aring
 
-# 进入Alist容器,安装Aring插件
-docker exec -it alist bash
-/alist/alist.sh plugin install aring
-/alist/alist.sh restart
+echo "Alist and Aring containers are running successfully!"
+```
 
-echo "Alist and Aring installed successfully!"
+# 在这个脚本中，我们设置了一个`shared_dir`变量来指定共享路径，然后创建了三个子目录来分别存放Alist的数据、Alist的配置以及Aring的数据。这样，Alist

@@ -29,9 +29,9 @@ docker run -d --name aring \
 -v /aring/data:/data \
 eilinge/aring
 
- # 进入Alist容器,安装Aring插件
+# 进入Alist容器,安装Aring插件
 docker exec -it alist bash
 /alist/alist.sh plugin install aring
 /alist/alist.sh restart
 
-                  echo "Alist and Aring installed successfully!"
+echo "Alist and Aring installed successfully!"

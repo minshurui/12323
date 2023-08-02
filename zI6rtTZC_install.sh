@@ -16,8 +16,6 @@ fi
 
 
 
-# 抱歉之前提供的脚本有一些错误。以下是正确的脚本：
-
 ```bash
 #!/bin/bash
 
@@ -44,7 +42,8 @@ docker run -d --name alist \
   alexwall/alist
 
 # 拉取Aring镜像
-docker pull eilinge/aring2:latest
+docker pull eilinge/containers are running successfully!"
+```aring2:latest
 
 # 运行Aring容器
 docker run -d --name aring \
@@ -53,9 +52,4 @@ docker run -d --name aring \
   -v $shared_dir/aring_data:/data \
   eilinge/aring2:latest
 
-echo "Alist and Aring containers are running successfully!"
-```
-
-#这个脚本中修复了之前的语法错误，并更正了Aring2镜像的名称。请确保你安装了Docker，并且有足够的权限来拉取和运行容器。
-
-希望这次能够解决你的问题。如果有其他问题，请随时告诉我。
+echo "Alist and Aring

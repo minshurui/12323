@@ -35,7 +35,10 @@ mkdir -p $shared_dir/alist_data
 mkdir -p $shared_dir/alist_config
 mkdir -p $shared_dir/aring_data
 
-# 运行Alist
+# 拉取Alist镜像
+docker pull alexwall/alist
+
+# 运行Alist容器
 docker run -d --name alist \
   --network alist-aring-net \
   -p 5212:5212 \
@@ -43,14 +46,14 @@ docker run -d --name alist \
   -v $shared_dir/alist_config:/alist/config \
   alexwall/alist
 
-# 运行Aring
+# 拉取Aring镜像
+docker pull abrignoni/docker-aring
+
+# 运行Aring容器
 docker run -d --name aring \
   --network alist-aring-net \
   -p 8888:8080 \
   -v $shared_dir/aring_data:/data \
-  eilinge/aring
+  abrignoni/docker-aring
 
-echo "Alist and Aring containers are running successfully!"
-```
-
-# 在这个脚本中，我们设置了一个`shared_dir`变量来指定共享路径，然后创建了三个子目录来分别存放Alist的数据、Alist的配置以及Aring的数据。这样，Alist
+echo "Alist and Aring containers are running successfully

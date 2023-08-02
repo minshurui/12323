@@ -1,5 +1,21 @@
 #!/bin/bash
 
+# 安装 whiptail
+apt install -y whiptail 
+
+# 欢迎界面
+whiptail --title "安装程序" --msgbox "欢迎使用Alist和Aring安装程序" 10 40
+
+
+
+# 确认安装
+whiptail --title "确认安装" --yesno "是否开始安装?" 10 40
+if [ $? != 0 ]; then
+  exit 1
+fi
+
+
+
 # 更新系统
 apt update
 apt install -y curl unzip

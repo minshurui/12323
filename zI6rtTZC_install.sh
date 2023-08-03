@@ -5,7 +5,8 @@ sudo apt update
 sudo apt install -y certbot python3-certbot-nginx
 
 # 获取用户输入的域名
-domain=$$(dialog --inputbox "请输入你的域名:" 10 30 --output-fd 1)
+echo "请输入你的域名:"
+read domain
 
 # 图形化界面申请证书
 sudo certbot certonly --nginx -d $$domain

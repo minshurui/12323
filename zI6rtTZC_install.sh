@@ -9,3 +9,5 @@ domain=$$(dialog --inputbox "请输入你的域名（使用ASCII编码）:" 10 3
 
 # 图形化界面申请证书
 sudo certbot certonly --authenticator standalone --installer nginx -d $$domain
+
+# 完成后，certbot会自动配置Nginx使用新生成的证书

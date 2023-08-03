@@ -1,37 +1,34 @@
-```bash
 #!/bin/bash
 
-# 创建网络
-docker network create alist-aring-net
+# 图形化界面安装，请根据你使用的GUI工具或方式进行安装步骤
+# 这里以Xfce4桌面环境为例进行安装
+sudo apt update
+sudo apt install -y xfce4
+sudo apt install -y dialog
 
-# 设置共享路径
-shared_dir=/alist-aring/shared
+# 安装certbot
+sudo apt update
+sudo apt install -y certbot
 
-# 创建共享目录
-mkdir -p $shared_dir/alist_data
-mkdir -p $shared_dir/alist_config
-mkdir -p $shared_dir/aring_data
+# 获取用户输入的域名
+domain=$$(dialog --inputbox "请输入你的域名:" 10 30 --output-fd 1)
 
-# 拉取Alist镜像
-docker pull xhofe/alist:latest
+# 申请证书
+sudo certbot certonly --standalone -d $$domain
 
-# 运行Alist容器
-docker run -d --name alist \
-  --network alist-aring-net \
-  -p 5212:5212 \
-  -v $shared_dir/alist_data:/alist/data \
-  -v $shared_dir/alist_config:/alist/config \
-  xhofe/alist:latest
+# 复制证书到指定路径
+cert_path="/path/to/certificate.pem"
+sudo cp /etc/letsencrypt/live/$$domain/fullchain.pem $$cert_path
+sudo cp /etc/letsencrypt/live/$$domain/privkey.pem /path/to/privatekey.pem
 
-# 拉取Aring镜像
-docker pull eilinge/aring2:latest
+# 设置域名证书路径和Nginx反代配置
+nginx_conf="/etc/nginx/sites-available/default"
+nginx_cert_conf="    ssl_certificate $$cert_path;\n    ssl_certificate_key /path/to/privatekey.pem;"
 
-# 运行Aring容器
-docker run -d --name aring \
-  --network alist-aring-net \
-  -p 8888:8080 \
-  -v $shared_dir/aring_data:/data \
-  eilinge/aring2:latest
+# 更新Nginx配置文件
+sudo sed -i "s|^\(\s*\)listen\s.*$$|\1listen 443 ssl;|g" $$nginx_conf
+sudo sed -i "s|^\(\s*\)server_name\s.*$$|\1server_name $$domain;|g" $$nginx_conf
+sudo sed -i "s|^\(\s*\)location\s/\s{$$|\1location / {\n\1    proxy_pass http://localhost:5212;\n\1}\n\n\1location /aring/ {\n\1    proxy_pass http://localhost:8080/;\n\1}\n\n\1$$nginx_cert_conf|g" $$nginx_conf
 
-echo "Alist and Aring containers are running successfully!"
-```
+# 重启Nginx服务
+sudo service nginx restart
